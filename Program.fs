@@ -10,6 +10,7 @@ let main argv =
     printfn "%i %i" imgWidth imgHeight
     printfn "%i" maxIntensity
     for j = imgHeight - 1 downto 0 do
+        eprintfn "[%i] scan lines remaining" j
         for i = 0 to imgWidth - 1 do
             let fWidth = double(imgWidth)
             let fHeight = double(imgHeight)
@@ -23,4 +24,5 @@ let main argv =
 
             printfn "%i %i %i" ir ig ib
             ()
+    eprintfn "Done."
     0 // return an integer exit code
