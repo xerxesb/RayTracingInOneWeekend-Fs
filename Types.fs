@@ -9,21 +9,32 @@ type Vec3 = {
         Z: double
     } with
 
+    override this.ToString () =
+        sprintf "%f %f %f" this.X this.Y this.Z
+
     /// Negate current Vec3.
     static member (~-) (v: Vec3) =
         { X = -v.X; Y = -v.Y; Z = -v.Z }
 
-    /// Summation of 2x Vec3 objects.
+    /// Summation of 2x Vec3 values.
     static member (+) (v1: Vec3, v2: Vec3) =
         { X = v1.X + v2.X ; Y = v1.Y + v2.Y ; Z = v1.Z + v2.Z }
     
+    /// Difference of 2x Vec3 values.
+    static member (-) (v1: Vec3, v2: Vec3) =
+        { X = v1.X - v2.X ; Y = v1.Y - v2.Y ; Z = v1.Z - v2.Z }
+
+    /// Product of 2x Vec3 values
+    static member ( * ) (v1: Vec3, v2: Vec3) =
+        { X = v1.X * v2.X ; Y = v1.Y * v2.Y ; Z = v1.Z * v2.Z }
+    
     /// Multiply all points of a Vec3 by an amount
-    static member ( *= ) (v1: Vec3, t: double) =
+    static member ( * ) (v1: Vec3, t: double) =
         { X = v1.X * t ; Y = v1.Y * t ; Z = v1.Z * t }
     
     /// Divide all points of a Vec3 by an amount
-    static member (/=) (v1: Vec3, t:double) =
-        v1 *= (1.0 / t)
+    static member (/) (v1: Vec3, t:double) =
+        v1 * (1.0 / t)
 
     /// Index into the Vec3 by array index
     /// a.[0] = X
@@ -51,9 +62,25 @@ module Vec3 =
         { X = x; Y = y; Z = z }
 
     /// The length of the square of each point of the Vec3
-    let lengthSq (v: Vec3) =
+    let lengthSq v =
         v.X ** 2.0 + v.Y ** 2.0 + v.Z ** 2.0
 
     /// The sqrt of the lengthSq
-    let length (v:Vec3) =
+    let length v =
         sqrt(lengthSq(v))
+
+    /// The dot-product of two Vec3 values
+    let dot v1 v2 =
+          v1.X * v2.X 
+        + v1.Y * v2.Y
+        + v1.Z * v2.Z
+
+    /// The cross-product of two Vec3 values
+    let cross v1 v2 =
+        { X = v1.Y * v2.Z - v1.Z * v2.Y;
+          Y = v1.Z * v2.X - v1.X * v2.Z;
+          Z = v1.X * v2.Y - v1.Y * v2.X }
+
+    /// The unit vector length of a Vec3
+    let unitVector (v: Vec3) = 
+        v / (length v)
