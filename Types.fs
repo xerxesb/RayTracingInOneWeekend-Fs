@@ -54,7 +54,7 @@ type Vec3 = {
 
 
 type Point3 = Vec3
-type Colour3 = Vec3     // This could be improved...
+type Colour = Vec3    // This could be improved...
 
 module Vec3 =
     /// Create a new Vec3, from 3-point coordinate
@@ -84,3 +84,24 @@ module Vec3 =
     /// The unit vector length of a Vec3
     let unitVector (v: Vec3) = 
         v / (length v)
+
+module Colour =
+
+    /// <summary>
+    /// Creates a new Colour value
+    /// </summary>
+    /// <returns>Value of type Colour</returns>
+    let create r g b : (Colour) = 
+        { X = r; Y = g; Z = b }
+
+    /// <summary>
+    /// Formats a Colour value into a printable string in PPM format
+    /// </summary>
+    /// <returns>String that you can dump straight to stout</returns>
+    let writeColour (c: Colour) =
+        let maxIntensity = 255
+        let r = double(maxIntensity) * (c.X)
+        let g = double(maxIntensity) * (c.Y)
+        let b = double(maxIntensity) * (0.25)
+
+        sprintf "%i %i %i" (int r) (int g) (int b)

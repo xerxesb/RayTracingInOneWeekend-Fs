@@ -77,4 +77,10 @@ verifyEquality "(cross a f) cross.Z should be 484" 484.0 cross.Z
 let uv = Vec3.unitVector a 
 verifyEquality "(unitVector a) uv should be { 1; 2; 3 }" {X = 1.0; Y = 2.0; Z = 3.0} a
 
+let c1 = Colour.create 4.0 5.0 6.0
+verifyEquality "(colour) c1 should be { 4 ; 5; 6 }" { X = 4.0; Y = 5.0; Z = 6.0 } c1
+
+let colourStr = Colour.writeColour c1
+verifyEquality "(writeColour) colourStr should be '1024.00 1279.99 1535.99'" "1024.00 1279.99 1535.99" colourStr
+
 exit 0
