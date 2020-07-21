@@ -1,4 +1,5 @@
 ﻿open System
+open Types
 
 let imgWidth = 256
 let imgHeight = 256
