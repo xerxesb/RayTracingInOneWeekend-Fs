@@ -232,11 +232,27 @@ module Ray =
     let at (r:Ray) (t: double) =
         r.Origin + (t * r.Direction)
 
+
+    /// <summary>
+    /// Determines if a provided ray will hit a sphere located at (centre) with radius (radius)
+    /// </summary>
+    /// <returns>Bool indicating whether the ray intersected with the sphere</returns>
+    let hitSphere centre radius (r:Ray) =
+        let oc = r.Origin - centre
+        let a = Vec3.dot r.Direction r.Direction
+        let b = 2.0 * Vec3.dot oc r.Direction
+        let c = Vec3.dot oc oc - radius * radius
+        let discriminant = b * b - (4.0 * a * c)
+        discriminant > 0.0
+
     /// <summary>
     /// Create a colour for a point on a ray. By default, this will generate a blue->white gradient
     /// </summary>
     /// <returns>A gradient</returns>
     let colour (r:Ray) : Colour =
-        let dir = Vec3.unitVector r.Direction
-        let t = 0.5 * (dir.Y + 1.0)
-        (1.0 - t) * (Colour.create 1.0 1.0 1.0) + t * (Colour.create 0.5 0.7 1.0)
+        if (hitSphere (Point3.create 0.0 0.0 -1.0) 0.5 r) then
+            Colour.create 1.0 0.0 0.0
+        else
+            let dir = Vec3.unitVector r.Direction
+            let t = 0.5 * (dir.Y + 1.0)
+            (1.0 - t) * (Colour.create 1.0 1.0 1.0) + t * (Colour.create 0.5 0.7 1.0)
