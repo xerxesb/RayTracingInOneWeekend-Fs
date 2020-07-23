@@ -53,8 +53,8 @@ type Vec3 = {
     /// <param name="v1">The Vec3 value</param>
     /// <param name="t">The Time factor (t)</param>
     /// <returns>A new vector value</returns>
-    static member ( * ) (v1: Vec3, t: double) =
-        { X = v1.X * t ; Y = v1.Y * t ; Z = v1.Z * t }
+    static member ( * ) (v: Vec3, t: double) =
+        { X = v.X * t ; Y = v.Y * t ; Z = v.Z * t }
     
     /// <summary>
     /// Multiply all points of a Vec3 by an amount representing time (t)
@@ -62,8 +62,8 @@ type Vec3 = {
     /// <param name="v1">The Vec3 value</param>
     /// <param name="t">The Time factor (t)</param>
     /// <returns>A new vector value</returns>
-    static member ( * ) (t: double, v1: Vec3) =
-        { X = v1.X * t ; Y = v1.Y * t ; Z = v1.Z * t }
+    static member ( * ) (t: double, v: Vec3) =
+        { X = v.X * t ; Y = v.Y * t ; Z = v.Z * t }
     
     /// <summary>
     /// Divide all points of a Vec3 by an amount representing time (t)
@@ -182,7 +182,7 @@ module Vec3 =
     /// The unit vector length of a Vec3
     /// </summary>
     /// <param name="v">A Vec3 value</param>
-    /// <returns>The unit length of the vector</returns>
+    /// <returns>A Vec3 representing the unit length of the vector</returns>
     let unitVector (v: Vec3) = 
         v / (length v)
 
@@ -212,7 +212,7 @@ module Colour =
         let maxIntensity = 255
         let r = double(maxIntensity) * (c.X)
         let g = double(maxIntensity) * (c.Y)
-        let b = double(maxIntensity) * (0.25)
+        let b = double(maxIntensity) * (c.Z)
 
         sprintf "%i %i %i" (int r) (int g) (int b)
 
@@ -232,4 +232,11 @@ module Ray =
     let at (r:Ray) (t: double) =
         r.Origin + (t * r.Direction)
 
-    
+    /// <summary>
+    /// Create a colour for a point on a ray. By default, this will generate a blue->white gradient
+    /// </summary>
+    /// <returns>A gradient</returns>
+    let colour (r:Ray) : Colour =
+        let dir = Vec3.unitVector r.Direction
+        let t = 0.5 * (dir.Y + 1.0)
+        (1.0 - t) * (Colour.create 1.0 1.0 1.0) + t * (Colour.create 0.5 0.7 1.0)

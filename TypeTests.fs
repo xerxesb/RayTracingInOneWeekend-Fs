@@ -81,7 +81,7 @@ let c1 = Colour.create 4.0 5.0 6.0
 verifyEquality "(colour) c1 should be { 4 ; 5; 6 }" { X = 4.0; Y = 5.0; Z = 6.0 } c1
 
 let colourStr = Colour.writeColour c1
-verifyEquality "(writeColour) colourStr should be '1020 1275 63'" "1020 1275 63" colourStr
+verifyEquality "(writeColour) colourStr should be '1020 1275 1530'" "1020 1275 1530" colourStr
 
 let p1 = Point3.create 1.0 2.0 3.0
 verifyEquality "(Point3 create) p1 should be { 1; 2; 3 }" { X = 1.0 ; Y = 2.0 ; Z = 3.0} p1
