@@ -239,14 +239,14 @@ module Ray =
     /// <returns>Double indicating the normal at the point the ray intersected with the sphere</returns>
     let hitSphere centre radius (r:Ray) =
         let oc = r.Origin - centre
-        let a = Vec3.dot r.Direction r.Direction
-        let b = 2.0 * Vec3.dot oc r.Direction
-        let c = Vec3.dot oc oc - radius * radius
-        let discriminant = b * b - (4.0 * a * c)
+        let a = Vec3.lengthSq r.Direction
+        let halfB = Vec3.dot oc r.Direction
+        let c = (Vec3.lengthSq oc) - (radius * radius)
+        let discriminant = halfB * halfB - (a * c)
 
         if discriminant < 0.0 
         then -1.0 
-        else (-b - sqrt(discriminant)) / (2.0 * a)
+        else (-halfB - sqrt(discriminant)) / a
 
     /// <summary>
     /// Create a colour for a point on a ray. By default, this will generate a blue->white gradient
