@@ -5,7 +5,7 @@ open Types
 
 // Image
 let aspectRatio = 16.0 / 9.0
-let imgWidth = 400
+let imgWidth = 640
 let imgHeight = int(float(imgWidth) / aspectRatio)
 let maxIntensity = 255
 
