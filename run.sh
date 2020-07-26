@@ -11,4 +11,4 @@ if [ -z "$1" ]
     exit 1
 fi
 
-dotnet run > test_image/$@.ppm && test_image/qlf test_image/$@.ppm
+dotnet run > test_image/$@.ppm && (test_image/qlf test_image/$@.ppm &)

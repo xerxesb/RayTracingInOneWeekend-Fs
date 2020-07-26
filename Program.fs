@@ -22,6 +22,11 @@ let horizontal = Vec3.create viewportWidth 0.0 0.0
 let vertical = Vec3.create 0.0 viewportHeight 0.0
 let lowerLeftCorner = origin - (horizontal / 2.0) - (vertical / 2.0) - (Vec3.create 0.0 0.0 focalLength)
 
+let pointColour (j, i) =
+    let u = double(i) / (fWidth - 1.0)
+    let v = double(j) / (fHeight - 1.0)
+    let r = Ray.create origin (lowerLeftCorner + (u * horizontal) + (v * vertical) - origin)
+    Ray.colour r 
 
 [<EntryPoint>]
 let main argv =
@@ -29,16 +34,10 @@ let main argv =
     printfn "%i %i" imgWidth imgHeight
     printfn "%i" maxIntensity
 
-    for j = imgHeight - 1 downto 0 do
-        eprintfn "[%i] scan lines remaining" j
-        for i = 0 to imgWidth - 1 do
-            let u = double(i) / (fWidth - 1.0)
-            let v = double(j) / (fHeight - 1.0)
-            let r = Ray.create origin (lowerLeftCorner + (u * horizontal) + (v * vertical) - origin)
+    Seq.allPairs [imgHeight-1..-1..0] [0..imgWidth-1]
+    |> Seq.toArray
+    |> Array.Parallel.map (pointColour >> Colour.writeColour)
+    |> Array.iter (printfn "%s")
 
-            Ray.colour r 
-            |> Colour.writeColour
-            |> printfn "%s"
-            ()
     eprintfn "Done."
     0 // return an integer exit code
