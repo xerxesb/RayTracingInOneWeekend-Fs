@@ -3,7 +3,9 @@
 .vscode
 .ionide
 
-bin/**
-obj/**
+**/bin/**
+**/obj/**
 
 .fake
+.paket/
+paket-files/
