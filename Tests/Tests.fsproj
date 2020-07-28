@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../raytracer.fsproj">
+    <ProjectReference Include="../Raytracer/raytracer.fsproj">
       <Name>raytracer.fsproj</Name>
     </ProjectReference>
   </ItemGroup>

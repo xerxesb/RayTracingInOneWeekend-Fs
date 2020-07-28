@@ -30,6 +30,9 @@ let pointColour (j, i) =
 
 [<EntryPoint>]
 let main argv =
+    eprintfn "Rendering..."
+    let start = DateTime.Now
+
     printfn "P3"
     printfn "%i %i" imgWidth imgHeight
     printfn "%i" maxIntensity
@@ -39,5 +42,6 @@ let main argv =
     |> Array.Parallel.map (pointColour >> Colour.writeColour)
     |> Array.iter (printfn "%s")
 
-    eprintfn "Done."
+    let finish = DateTime.Now
+    eprintfn "Done. [%f seconds]" (finish-start).TotalSeconds 
     0 // return an integer exit code
