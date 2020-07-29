@@ -134,3 +134,33 @@ let RayTests =
             let pointOnR1 = Ray.At r1 4.0
             Expect.equal (Point3.create 5.0 10.0 15.0) pointOnR1 "(Ray.at) pointOnR1 should be { 5; 10; 15 }"
     ]
+
+[<Tests>]
+let SphereTests =
+    testList "Sphere Tests" [
+        testCase "Sphere can be hit" <| fun _ ->
+            let centre = Point3.create 0.0 0.0 -1.0
+            let vec = Vec3.create 0.0 0.0 -1.0
+            let radius = 1.0
+            let hrec = { Point = centre ; Normal = vec ; T = 1.0 }
+            let sphere = { Centre = centre ; Radius = radius }
+
+            let cameraPoint = Point3.create 0.0 0.0 1.0
+            let ray = Ray.create cameraPoint vec
+            let (wasHit, hitResult) = sphere.Hit ray -2.0 2.0 hrec
+
+            Expect.isTrue wasHit "Ray should have hit Sphere"
+
+        testCase "Sphere can be missed" <| fun _ ->
+            let centre = Point3.create 0.0 0.0 -1.0
+            let vec = Vec3.create 0.0 0.0 -1.0
+            let radius = 1.0
+            let hrec = { Point = centre ; Normal = vec ; T = 1.0 }
+            let sphere = { Centre = centre ; Radius = radius }
+
+            let cameraPoint = Point3.create 0.0 0.0 -10.0
+            let ray = Ray.create cameraPoint vec
+            let (wasHit, hitResult) = sphere.Hit ray -2.0 2.0 hrec
+
+            Expect.isFalse wasHit "Ray was fired behind the sphere"
+    ]

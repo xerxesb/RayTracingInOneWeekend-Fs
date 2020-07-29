@@ -154,7 +154,7 @@ type HitRecord = { Point: Point3; Normal: Vec3; T: double }
 /// (F# doesn't have support for Haskell style typeclasses)
 /// </summary>
 type IHittable =
-    abstract Hit: r:Ray -> tMin:double -> tMax:double -> hitRecord:HitRecord -> bool * HitRecord option
+    abstract member Hit: r:Ray -> tMin:double -> tMax:double -> hitRecord:HitRecord -> bool * HitRecord option
 
 
 module Vec3 =
@@ -258,19 +258,16 @@ module Ray =
         if discriminant < 0.0 then -1.0 else (-halfB - sqrt (discriminant)) / a
 
     /// <summary>
-    /// Create a colour for a point on a ray. By default, this will generate a blue->white gradient
+    /// Create a colour for the visualisation of a ray. If the ray misses all objects, it will provide the colour ofthe background.
     /// </summary>
-    /// <returns>A gradient</returns>
+    /// <returns>The colour of the point that the ray intersected with the object</returns>
     let colour (r: Ray): Colour =
-        let t =
-            hitSphere (Point3.create 0.0 0.0 -1.0) 0.5 r
+        let t = hitSphere (Point3.create 0.0 0.0 -1.0) 0.5 r
 
         if t > 0.0 then
-            let n =
-                Vec3.unitVector ((Ray.At r t) - (Vec3.create 0.0 0.0 -1.0))
+            let n = Vec3.unitVector ((Ray.At r t) - (Vec3.create 0.0 0.0 -1.0))
 
-            0.5
-            * (Colour.create (n.X + 1.0) (n.Y + 1.0) (n.Z + 1.0))
+            0.5 * (Colour.create (n.X + 1.0) (n.Y + 1.0) (n.Z + 1.0))
         else
             let dir = Vec3.unitVector r.Direction
             let t = 0.5 * (dir.Y + 1.0)
@@ -287,7 +284,9 @@ module Ray =
 /// </summary>
 type Sphere = 
     { Centre: Point3
-      Radius: double }
+      Radius: double } with
+    member this.Hit r tMin tMax hRec =
+        (this :> IHittable).Hit r tMin tMax hRec
     interface IHittable with
         member this.Hit r tMin tMax hRec =
             let oc = r.Origin - this.Centre
