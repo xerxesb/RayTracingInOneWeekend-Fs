@@ -144,19 +144,6 @@ type Ray =
         r.Origin + (t * r.Direction)
 
 
-/// <summary>
-/// A represenation of a hit of a ray on an object
-/// </summary>
-type HitRecord = { Point: Point3; Normal: Vec3; T: double }
-
-/// <summary>
-/// An interface to define behaviour for a type that will block/intersect with a Ray
-/// (F# doesn't have support for Haskell style typeclasses)
-/// </summary>
-type IHittable =
-    abstract member Hit: r:Ray -> tMin:double -> tMax:double -> hitRecord:HitRecord -> bool * HitRecord option
-
-
 module Vec3 =
     /// <summary>
     /// Create a new Vec3, from 3-point coordinate
@@ -278,6 +265,29 @@ module Ray =
 
 
 /// <summary>
+/// A represenation of a hit of a ray on an object
+/// </summary>
+type HitRecord = 
+    { Point: Point3; 
+      Normal: Vec3; 
+      T: double;
+      FrontFace: bool option
+    } with
+    member this.SetFaceNormal (r:Ray) (outwardNormal:Vec3) =
+        let frontFace = Vec3.dot r.Direction outwardNormal < 0.0
+        let normal = if frontFace then outwardNormal else -outwardNormal
+        { this with Normal = normal; FrontFace = Some frontFace }
+
+
+/// <summary>
+/// An interface to define behaviour for a type that will block/intersect with a Ray
+/// (F# doesn't have support for Haskell style typeclasses)
+/// </summary>
+type IHittable =
+    abstract member Hit: r:Ray -> tMin:double -> tMax:double -> hitRecord:HitRecord -> bool * HitRecord option
+
+
+/// <summary>
 /// Definition of a sphere type.
 /// 
 /// Must implement the IHittable interface to detect intersections with rays
@@ -300,13 +310,17 @@ type Sphere =
 
                 let temp = (-halfB - root) / a
                 if (temp < tMax && temp > tMin) then
-                    let hrec = { T = temp ; Point = (Ray.At r hRec.T) ; Normal = (hRec.Point - this.Centre) / this.Radius }
-                    (true, Some hrec)
+                    let hRecTemp = { hRec with T = temp ; Point = (Ray.At r hRec.T) }
+                    let outwardNormal = (hRecTemp.Point - this.Centre) / this.Radius
+                    let faceNormalHRec = hRec.SetFaceNormal r outwardNormal
+                    (true, Some faceNormalHRec)
                 else
                     let temp = (-halfB + root) / a
                     if (temp < tMax && temp > tMin) then
-                        let hrec = { T = temp ; Point = (Ray.At r hRec.T) ; Normal = (hRec.Point - this.Centre) / this.Radius }
-                        (true, Some hrec)
+                        let hRecTemp = { hRec with T = temp ; Point = (Ray.At r hRec.T) }
+                        let outwardNormal = (hRecTemp.Point - this.Centre) / this.Radius
+                        let faceNormalHRec = hRec.SetFaceNormal r outwardNormal
+                        (true, Some faceNormalHRec)
                     else
                         (false, None)
             else
